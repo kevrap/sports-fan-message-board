@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
+import { useAuth } from '../context/AuthContext'
 
 export default function PostPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user } = useAuth()
 
   const [post, setPost] = useState(null)
   const [comments, setComments] = useState([])
@@ -52,6 +54,7 @@ export default function PostPage() {
   }
 
   async function handleUpvote() {
+    if (!user) { navigate('/auth'); return }
     const { data, error } = await supabase
       .from('posts')
       .update({ upvotes: post.upvotes + 1 })
@@ -189,27 +192,37 @@ export default function PostPage() {
             <button className="btn btn-upvote" onClick={handleUpvote}>
               ▲ Upvote &nbsp;<span className="upvote-count">{post.upvotes}</span>
             </button>
-            <button className="btn btn-secondary" onClick={() => setEditing(true)}>Edit</button>
-            <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+            {user && (
+              <>
+                <button className="btn btn-secondary" onClick={() => setEditing(true)}>Edit</button>
+                <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+              </>
+            )}
           </div>
 
           <section className="comments-section">
             <h3>Comments <span className="comment-count">({comments.length})</span></h3>
 
-            <form className="comment-form" onSubmit={handleAddComment}>
-              <textarea
-                className="form-input"
-                value={newComment}
-                onChange={e => setNewComment(e.target.value)}
-                placeholder="Write a comment..."
-                rows={3}
-                required
-              />
-              {commentError && <p className="form-error">{commentError}</p>}
-              <button type="submit" className="btn btn-primary" disabled={submittingComment}>
-                {submittingComment ? 'Posting...' : 'Post Comment'}
-              </button>
-            </form>
+            {user ? (
+              <form className="comment-form" onSubmit={handleAddComment}>
+                <textarea
+                  className="form-input"
+                  value={newComment}
+                  onChange={e => setNewComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  rows={3}
+                  required
+                />
+                {commentError && <p className="form-error">{commentError}</p>}
+                <button type="submit" className="btn btn-primary" disabled={submittingComment}>
+                  {submittingComment ? 'Posting...' : 'Post Comment'}
+                </button>
+              </form>
+            ) : (
+              <p className="login-prompt">
+                <Link to="/auth">Log in</Link> to leave a comment.
+              </p>
+            )}
 
             <div className="comments-list">
               {comments.length === 0 ? (
