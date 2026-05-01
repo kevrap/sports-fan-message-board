@@ -1,17 +1,18 @@
-# Web Development Final Project - *HobbyHub*
+# Web Development Final Project - *Miami Heat Fan Club*
 
 Submitted by: **Kevin Rapkin**
 
 ZNumber: **Z15183142**
 
-This web app: **HobbyHub** is
+This web app: **Miami Heat Fan Club** is a message board for fans of the Miami Heat basketball team to discuss their hobby. 
 
-Time spent: 3 hours spent in total
+Deployed via Netlify: https://miamiheatfanclub.netlify.app/ 
+
+Time spent: 6 hours spent in total
 
 ## Required Features
 
 The following **required** functionality is completed:
-
 
 - [X] **Web app includes a create form that allows the user to create posts**
   - Form requires users to add a post title
@@ -49,7 +50,6 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-
 - [X] Web app implements pseudo-authentication
   - Users can only edit and delete posts or delete comments by entering the secret key, which is set by the user during post creation
   - **or** upon launching the web app, the user is assigned a random user ID. It will be associated with all posts and comments that they make and displayed on them
@@ -82,7 +82,6 @@ The following **additional** features are implemented:
 - [X] Use of LLM for app
   - Have LLM provide an overall summary of Post.  Need to provide title, description, posts, upvotes, comments. 
   - Display LLM summary in a nice way on the UI
-
 
 ## Video Walkthrough
 
