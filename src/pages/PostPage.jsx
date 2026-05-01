@@ -19,23 +19,11 @@ export default function PostPage() {
   const [editError, setEditError] = useState('')
   const [commentError, setCommentError] = useState('')
   const [submittingComment, setSubmittingComment] = useState(false)
-  const [hasUpvoted, setHasUpvoted] = useState(false)
 
   useEffect(() => {
     fetchPost()
     fetchComments()
   }, [id])
-
-  useEffect(() => {
-    if (!user) return
-    supabase
-      .from('post_upvotes')
-      .select('post_id')
-      .eq('post_id', id)
-      .eq('user_id', user.id)
-      .maybeSingle()
-      .then(({ data }) => setHasUpvoted(!!data))
-  }, [id, user])
 
   async function fetchPost() {
     const { data, error } = await supabase
@@ -67,13 +55,6 @@ export default function PostPage() {
 
   async function handleUpvote() {
     if (!user) { navigate('/auth'); return }
-    if (hasUpvoted) return
-
-    const { error: insertError } = await supabase
-      .from('post_upvotes')
-      .insert({ post_id: id, user_id: user.id })
-
-    if (insertError) return
 
     const { data, error } = await supabase
       .from('posts')
@@ -82,10 +63,7 @@ export default function PostPage() {
       .select()
       .single()
 
-    if (!error) {
-      setPost(data)
-      setHasUpvoted(true)
-    }
+    if (!error) setPost(data)
   }
 
   async function handleDelete() {
@@ -219,8 +197,8 @@ export default function PostPage() {
           )}
 
           <div className="post-actions">
-            <button className="btn btn-upvote" onClick={handleUpvote} disabled={hasUpvoted}>
-              ▲ {hasUpvoted ? 'Upvoted' : 'Upvote'} &nbsp;<span className="upvote-count">{post.upvotes}</span>
+            <button className="btn btn-upvote" onClick={handleUpvote}>
+              ▲ Upvote &nbsp;<span className="upvote-count">{post.upvotes}</span>
             </button>
             {isOwner && (
               <>
