@@ -19,6 +19,9 @@ export default function PostPage() {
   const [editError, setEditError] = useState('')
   const [commentError, setCommentError] = useState('')
   const [submittingComment, setSubmittingComment] = useState(false)
+  const [summary, setSummary] = useState('')
+  const [summaryLoading, setSummaryLoading] = useState(false)
+  const [summaryError, setSummaryError] = useState('')
 
   useEffect(() => {
     fetchPost()
@@ -125,6 +128,50 @@ export default function PostPage() {
     if (!error) setComments(prev => prev.filter(c => c.id !== commentId))
   }
 
+  async function handleSummarize() {
+    setSummaryLoading(true)
+    setSummaryError('')
+    setSummary('')
+
+    const text = post.content
+      ? `Title: ${post.title}\n\n${post.content}`
+      : `Title: ${post.title}`
+
+    const endpoint = import.meta.env.VITE_LLM_ENDPOINT.replace(/\/$/, '')
+    try {
+      const res = await fetch(`${endpoint}/api/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_LLM_API_KEY}`,
+        },
+        body: JSON.stringify({
+          model: 'openai/gemma4:26b',
+          messages: [{
+            role: 'user',
+            content: `Summarize the following post in exactly two sentences:\n\n${text}`,
+          }],
+          max_tokens: 2000,
+        }),
+      })
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => '')
+        console.error(`API ${res.status}:`, errBody)
+        throw new Error(`API error ${res.status}`)
+      }
+      const json = await res.json()
+      const msg = json?.choices?.[0]?.message
+      const summary = msg?.content || msg?.reasoning_content || ''
+      if (!summary) throw new Error('Unexpected response shape')
+      setSummary(summary.trim())
+    } catch (err) {
+      setSummaryError('Failed to generate summary. Please try again.')
+      console.error(err)
+    } finally {
+      setSummaryLoading(false)
+    }
+  }
+
   const isOwner = user && post && user.id === post.user_id
 
   if (loading) return <p className="status-msg">Loading post...</p>
@@ -184,27 +231,50 @@ export default function PostPage() {
             </div>
           </div>
 
-          {post.image_url && (
-            <div className="post-image-wrapper">
-              <img src={post.image_url} alt="Post image" className="post-image" />
-            </div>
-          )}
+          <div className="post-body-row">
+            <div className="post-body-main">
+              {post.image_url && (
+                <div className="post-image-wrapper">
+                  <img src={post.image_url} alt="Post image" className="post-image" />
+                </div>
+              )}
 
-          {post.content && (
-            <div className="post-content">
-              <p>{post.content}</p>
-            </div>
-          )}
+              {post.content && (
+                <div className="post-content">
+                  <p>{post.content}</p>
+                </div>
+              )}
 
-          <div className="post-actions">
-            <button className="btn btn-upvote" onClick={handleUpvote}>
-              ▲ Upvote &nbsp;<span className="upvote-count">{post.upvotes}</span>
-            </button>
-            {isOwner && (
-              <>
-                <button className="btn btn-secondary" onClick={() => setEditing(true)}>Edit</button>
-                <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
-              </>
+              <div className="post-actions">
+                <button className="btn btn-upvote" onClick={handleUpvote}>
+                  ▲ Upvote &nbsp;<span className="upvote-count">{post.upvotes}</span>
+                </button>
+                <button
+                  className="btn btn-summarize"
+                  onClick={handleSummarize}
+                  disabled={summaryLoading}
+                >
+                  {summaryLoading ? '✦ Summarizing...' : '✦ AI Summary'}
+                </button>
+                {isOwner && (
+                  <>
+                    <button className="btn btn-secondary" onClick={() => setEditing(true)}>Edit</button>
+                    <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
+                  </>
+                )}
+              </div>
+            </div>
+
+            {(summary || summaryLoading || summaryError) && (
+              <div className="summary-panel">
+                <h4 className="summary-title">✦ AI Summary</h4>
+                {summaryLoading && <p className="summary-loading">Generating summary...</p>}
+                {summaryError && <p className="form-error">{summaryError}</p>}
+                {summary && <p className="summary-text">{summary}</p>}
+                {summary && (
+                  <button className="btn-close-summary" onClick={() => setSummary('')}>✕ Dismiss</button>
+                )}
+              </div>
             )}
           </div>
 

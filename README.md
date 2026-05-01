@@ -72,14 +72,14 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 
-- [ ] Web App Deployment
+- [X] Web App Deployment
   - Use one of the following cloud deployment sites: netlify, heroku,  (check for others)
   - provide your deployment URL in the github readme and submit your github repo link as part of this submission.
 
 - [X] Create a User Login & Signup and tie it in with Supabase backend
   - (Login 1pt - Signup - userid/pw - 1pts - Google/Apple id - 1pt - pw reset flow - 1pt. logout 1pt)
 
-- [ ] Use of LLM for app
+- [X] Use of LLM for app
   - Have LLM provide an overall summary of Post.  Need to provide title, description, posts, upvotes, comments. 
   - Display LLM summary in a nice way on the UI
 
