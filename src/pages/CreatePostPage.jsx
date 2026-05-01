@@ -1,9 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { supabase } from '../supabaseClient'
+import { useAuth } from '../context/AuthContext'
 
 export default function CreatePostPage() {
   const navigate = useNavigate()
+  const { user } = useAuth()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [imageUrl, setImageUrl] = useState('')
@@ -23,6 +25,7 @@ export default function CreatePostPage() {
         content: content.trim() || null,
         image_url: imageUrl.trim() || null,
         upvotes: 0,
+        user_id: user.id,
       })
       .select()
       .single()

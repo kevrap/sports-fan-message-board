@@ -19,11 +19,23 @@ export default function PostPage() {
   const [editError, setEditError] = useState('')
   const [commentError, setCommentError] = useState('')
   const [submittingComment, setSubmittingComment] = useState(false)
+  const [hasUpvoted, setHasUpvoted] = useState(false)
 
   useEffect(() => {
     fetchPost()
     fetchComments()
   }, [id])
+
+  useEffect(() => {
+    if (!user) return
+    supabase
+      .from('post_upvotes')
+      .select('post_id')
+      .eq('post_id', id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+      .then(({ data }) => setHasUpvoted(!!data))
+  }, [id, user])
 
   async function fetchPost() {
     const { data, error } = await supabase
@@ -55,6 +67,14 @@ export default function PostPage() {
 
   async function handleUpvote() {
     if (!user) { navigate('/auth'); return }
+    if (hasUpvoted) return
+
+    const { error: insertError } = await supabase
+      .from('post_upvotes')
+      .insert({ post_id: id, user_id: user.id })
+
+    if (insertError) return
+
     const { data, error } = await supabase
       .from('posts')
       .update({ upvotes: post.upvotes + 1 })
@@ -62,7 +82,10 @@ export default function PostPage() {
       .select()
       .single()
 
-    if (!error) setPost(data)
+    if (!error) {
+      setPost(data)
+      setHasUpvoted(true)
+    }
   }
 
   async function handleDelete() {
@@ -105,7 +128,7 @@ export default function PostPage() {
 
     const { data, error } = await supabase
       .from('comments')
-      .insert({ post_id: id, content: newComment.trim() })
+      .insert({ post_id: id, content: newComment.trim(), user_id: user.id })
       .select()
       .single()
 
@@ -119,6 +142,13 @@ export default function PostPage() {
     }
   }
 
+  async function handleDeleteComment(commentId) {
+    const { error } = await supabase.from('comments').delete().eq('id', commentId)
+    if (!error) setComments(prev => prev.filter(c => c.id !== commentId))
+  }
+
+  const isOwner = user && post && user.id === post.user_id
+
   if (loading) return <p className="status-msg">Loading post...</p>
   if (!post) return (
     <div className="status-msg">
@@ -131,7 +161,7 @@ export default function PostPage() {
     <div className="post-page">
       <Link to="/" className="back-link">← Back to feed</Link>
 
-      {editing ? (
+      {isOwner && editing ? (
         <form className="post-form" onSubmit={handleEdit}>
           <h2>Edit Post</h2>
           <label className="form-label">
@@ -189,10 +219,10 @@ export default function PostPage() {
           )}
 
           <div className="post-actions">
-            <button className="btn btn-upvote" onClick={handleUpvote}>
-              ▲ Upvote &nbsp;<span className="upvote-count">{post.upvotes}</span>
+            <button className="btn btn-upvote" onClick={handleUpvote} disabled={hasUpvoted}>
+              ▲ {hasUpvoted ? 'Upvoted' : 'Upvote'} &nbsp;<span className="upvote-count">{post.upvotes}</span>
             </button>
-            {user && (
+            {isOwner && (
               <>
                 <button className="btn btn-secondary" onClick={() => setEditing(true)}>Edit</button>
                 <button className="btn btn-danger" onClick={handleDelete}>Delete</button>
@@ -231,7 +261,17 @@ export default function PostPage() {
                 comments.map(comment => (
                   <div key={comment.id} className="comment-card">
                     <p className="comment-content">{comment.content}</p>
-                    <span className="comment-date">{new Date(comment.created_at).toLocaleString()}</span>
+                    <div className="comment-footer">
+                      <span className="comment-date">{new Date(comment.created_at).toLocaleString()}</span>
+                      {user && user.id === comment.user_id && (
+                        <button
+                          className="btn-delete-comment"
+                          onClick={() => handleDeleteComment(comment.id)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))
               )}
