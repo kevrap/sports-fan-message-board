@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage'
 import PostPage from './pages/PostPage'
 import CreatePostPage from './pages/CreatePostPage'
 import AuthPage from './pages/AuthPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 import './App.css'
 
 function App() {
@@ -16,6 +17,7 @@ function App() {
         <main className="container">
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/post/:id" element={<PostPage />} />
             <Route path="/create" element={<ProtectedRoute><CreatePostPage /></ProtectedRoute>} />

@@ -30,6 +30,13 @@ export function AuthProvider({ children }) {
     return { data, error }
   }
 
+  async function resetPassword(email) {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    })
+    return { error }
+  }
+
   async function signInWithGoogle() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -45,7 +52,7 @@ export function AuthProvider({ children }) {
   const email = user?.email ?? null
 
   return (
-    <AuthContext.Provider value={{ user, email, loading, signUp, signIn, signInWithGoogle, signOut }}>
+    <AuthContext.Provider value={{ user, email, loading, signUp, signIn, signInWithGoogle, resetPassword, signOut }}>
       {children}
     </AuthContext.Provider>
   )

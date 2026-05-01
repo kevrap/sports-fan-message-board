@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function AuthPage() {
-  const { signIn, signUp, signInWithGoogle } = useAuth()
+  const { signIn, signUp, signInWithGoogle, resetPassword } = useAuth()
   const navigate = useNavigate()
 
   const [tab, setTab] = useState('login') // 'login' | 'signup'
@@ -12,6 +12,10 @@ export default function AuthPage() {
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
   const [submitting, setSubmitting] = useState(false)
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotMsg, setForgotMsg] = useState('')
+  const [forgotSubmitting, setForgotSubmitting] = useState(false)
 
   function switchTab(t) {
     setTab(t)
@@ -19,6 +23,22 @@ export default function AuthPage() {
     setEmail('')
     setPassword('')
     setConfirm('')
+    setShowForgot(false)
+    setForgotMsg('')
+  }
+
+  async function handleForgot(e) {
+    e.preventDefault()
+    if (!forgotEmail.trim()) return
+    setForgotSubmitting(true)
+    setForgotMsg('')
+    const { error: err } = await resetPassword(forgotEmail.trim())
+    setForgotSubmitting(false)
+    if (err) {
+      setForgotMsg('Could not send reset email. Please try again.')
+    } else {
+      setForgotMsg('Check your email for a password reset link.')
+    }
   }
 
   async function handleSubmit(e) {
@@ -133,6 +153,39 @@ export default function AuthPage() {
               : (tab === 'login' ? 'Log In' : 'Create Account')}
           </button>
         </form>
+
+        {tab === 'login' && !showForgot && (
+          <button type="button" className="forgot-link" onClick={() => setShowForgot(true)}>
+            Forgot password?
+          </button>
+        )}
+
+        {tab === 'login' && showForgot && (
+          <form className="forgot-form" onSubmit={handleForgot}>
+            <p className="forgot-instructions">Enter your email and we'll send you a reset link.</p>
+            <input
+              className="form-input"
+              type="email"
+              value={forgotEmail}
+              onChange={e => setForgotEmail(e.target.value)}
+              placeholder="you@example.com"
+              required
+            />
+            {forgotMsg && (
+              <p className={forgotMsg.startsWith('Check') ? 'forgot-success' : 'form-error'}>
+                {forgotMsg}
+              </p>
+            )}
+            <div className="forgot-actions">
+              <button type="submit" className="btn btn-primary" disabled={forgotSubmitting}>
+                {forgotSubmitting ? 'Sending...' : 'Send Reset Link'}
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={() => { setShowForgot(false); setForgotMsg('') }}>
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
 
         <div className="auth-divider"><span>or</span></div>
 
