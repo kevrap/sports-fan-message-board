@@ -41,7 +41,10 @@ export default function ResetPasswordPage() {
     return (
       <div className="auth-wrapper">
         <div className="auth-card">
-          <h1 className="auth-brand">PostBoard</h1>
+          <h1 className="auth-brand">
+            <img src="/img/heat.png" alt="" className="nav-brand-icon" />
+            Miami Heat Fan Club
+          </h1>
           <p className="status-msg" style={{ marginTop: 0 }}>Waiting for reset link…</p>
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', textAlign: 'center' }}>
             Click the link in your email to activate this page.
@@ -54,7 +57,10 @@ export default function ResetPasswordPage() {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <h1 className="auth-brand">PostBoard</h1>
+        <h1 className="auth-brand">
+          <img src="/img/heat.png" alt="" className="nav-brand-icon" />
+          Miami Heat Fan Club
+        </h1>
         <h2 style={{ textAlign: 'center', fontSize: '1.1rem' }}>Set New Password</h2>
 
         {success ? (

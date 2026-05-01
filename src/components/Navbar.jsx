@@ -12,7 +12,10 @@ export default function Navbar({ theme, toggleTheme }) {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="nav-brand">PostBoard</Link>
+      <Link to="/" className="nav-brand">
+        <img src="/img/heat.png" alt="" className="nav-brand-icon" />
+        Miami Heat Fan Club
+      </Link>
       <div className="nav-right">
         <button className="btn-theme-toggle" onClick={toggleTheme} title="Toggle theme">
           {theme === 'dark' ? '☀' : '☾'}

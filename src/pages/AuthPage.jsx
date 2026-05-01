@@ -84,7 +84,10 @@ export default function AuthPage() {
   return (
     <div className="auth-wrapper">
       <div className="auth-card">
-        <h1 className="auth-brand">PostBoard</h1>
+        <h1 className="auth-brand">
+          <img src="/img/heat.png" alt="" className="nav-brand-icon" />
+          Miami Heat Fan Club
+        </h1>
 
         <div className="auth-tabs">
           <button
