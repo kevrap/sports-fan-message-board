@@ -233,27 +233,6 @@ export default function PostPage() {
           <section className="comments-section">
             <h3>Comments <span className="comment-count">({comments.length})</span></h3>
 
-            {user ? (
-              <form className="comment-form" onSubmit={handleAddComment}>
-                <textarea
-                  className="form-input"
-                  value={newComment}
-                  onChange={e => setNewComment(e.target.value)}
-                  placeholder="Write a comment..."
-                  rows={3}
-                  required
-                />
-                {commentError && <p className="form-error">{commentError}</p>}
-                <button type="submit" className="btn btn-primary" disabled={submittingComment}>
-                  {submittingComment ? 'Posting...' : 'Post Comment'}
-                </button>
-              </form>
-            ) : (
-              <p className="login-prompt">
-                <Link to="/auth">Log in</Link> to leave a comment.
-              </p>
-            )}
-
             <div className="comments-list">
               {comments.length === 0 ? (
                 <p className="no-comments">No comments yet. Be the first!</p>
@@ -276,6 +255,27 @@ export default function PostPage() {
                 ))
               )}
             </div>
+
+            {user ? (
+              <form className="comment-form" onSubmit={handleAddComment}>
+                <textarea
+                  className="form-input"
+                  value={newComment}
+                  onChange={e => setNewComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  rows={3}
+                  required
+                />
+                {commentError && <p className="form-error">{commentError}</p>}
+                <button type="submit" className="btn btn-primary" disabled={submittingComment}>
+                  {submittingComment ? 'Posting...' : 'Post Comment'}
+                </button>
+              </form>
+            ) : (
+              <p className="login-prompt">
+                <Link to="/auth">Log in</Link> to leave a comment.
+              </p>
+            )}
           </section>
         </>
       )}
