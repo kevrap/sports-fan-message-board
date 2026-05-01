@@ -68,7 +68,7 @@ The following **optional** features are implemented:
   - Users can filter posts by flags on the home feed
   - Users can upload images directly from their local machine as an image file
 
-- [ ] Web app displays a loading animation whenever data is being fetched
+- [X] Web app displays a loading animation whenever data is being fetched
 
 The following **additional** features are implemented:
 
@@ -88,7 +88,13 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented features:
 
+Codepath Required Features:
+
 <img src='projectfinaldemo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+Class Extra Required Features:
+
+<img src='projectfinaldemo2.gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough 2' />
 
 <!-- Replace this with whatever GIF tool you used! -->
 GIF created with [LiceCap](https://www.cockos.com/licecap/)
