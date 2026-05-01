@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
-export default function Navbar() {
+export default function Navbar({ theme, toggleTheme }) {
   const { user, email, signOut } = useAuth()
   const navigate = useNavigate()
 
@@ -14,6 +14,9 @@ export default function Navbar() {
     <nav className="navbar">
       <Link to="/" className="nav-brand">PostBoard</Link>
       <div className="nav-right">
+        <button className="btn-theme-toggle" onClick={toggleTheme} title="Toggle theme">
+          {theme === 'dark' ? '☀' : '☾'}
+        </button>
         {user ? (
           <>
             <span className="nav-username">{email}</span>

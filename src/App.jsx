@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import Navbar from './components/Navbar'
@@ -10,10 +11,21 @@ import ResetPasswordPage from './pages/ResetPasswordPage'
 import './App.css'
 
 function App() {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark')
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme)
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  function toggleTheme() {
+    setTheme(t => t === 'dark' ? 'light' : 'dark')
+  }
+
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Navbar />
+        <Navbar theme={theme} toggleTheme={toggleTheme} />
         <main className="container">
           <Routes>
             <Route path="/auth" element={<AuthPage />} />
