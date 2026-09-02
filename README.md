@@ -2,13 +2,9 @@
 
 Submitted by: **Kevin Rapkin**
 
-ZNumber: **Z15183142**
-
 This web app: **Miami Heat Fan Club** is a message board for fans of the Miami Heat basketball team to discuss their hobby. Users are able to create a new post with a title, message body, and optional image. Users are able to upvote and comment on posts. These comments can be deleted. Users are also able to edit or delete their own posts too. The posts are displayed in a feed. Each post has a unique page when you click on it. The backend for this web app is done through supabase with database tables for posts and comments. Supabase also handles user logins where users can signup and login via their personal email, and reset passwords if they forget. Users can bypass this login method by using a Google login instead. An AI summary button is included on every post in case a user doesn't want to read a wall of text they can click summarize and it sends the post content to an LLM to generate a two sentence summary of what is being discussed. Users can also search for a topic by keyword or sort the feed by latest post or most upvoted. User can also toggle between light and dark mode display.
 
 Deployed via Netlify: https://miamiheatfanclub.netlify.app/ 
-
-Time spent: 6 hours spent in total
 
 ## Required Features
 
@@ -62,12 +58,6 @@ The following **optional** features are implemented:
 - [X] Users can customize the interface
   - e.g., selecting the color scheme or showing the content and image of each post on the home feed
 
-- [ ] Users can add more characterics to their posts
-  - Users can share and view web videos
-  - Users can set flags such as "Question" or "Opinion" while creating a post
-  - Users can filter posts by flags on the home feed
-  - Users can upload images directly from their local machine as an image file
-
 - [X] Web app displays a loading animation whenever data is being fetched
 
 The following **additional** features are implemented:
@@ -87,11 +77,11 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented features:
 
-Codepath Required Features:
+Required Features:
 
 <img src='projectfinaldemo.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-Class Extra Required Features:
+Extra Features:
 
 <img src='projectfinaldemo2.gif' title='Video Walkthrough 2' width='' alt='Video Walkthrough 2' />
 
